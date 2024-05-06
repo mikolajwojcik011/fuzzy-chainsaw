@@ -1,26 +1,22 @@
 <script lang="ts">
-export interface IdQuestion {
-  id: number;  
-  label: string;
-  format: string;
-}
-
 export default {
     name: 'InputIdentifyUser',
     data(){
         return{
-            id: null,
-            label: null,
-            format: 'Text'
+            id: this.propId,
+            label: this.propLabel,
+            format: this.propFromat
         }
     },
     props: {
         propId: Number,
+        propLabel: String,
+        propFromat: String
     },
     methods: {
         handleData(){ 
             if (this.label && this.format) {
-                this.$emit('inputData', { id: this.propId, label: this.label, format: this.format });          
+                this.$emit('inputData', { id: this.id, label: this.label, format: this.format });          
             }
         }
     }
