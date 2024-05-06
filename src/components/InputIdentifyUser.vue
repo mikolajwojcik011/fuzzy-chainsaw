@@ -1,5 +1,6 @@
 <script lang="ts">
-export interface InputData {
+export interface IdQuestion {
+  id: number;  
   label: string;
   format: string;
 }
@@ -8,15 +9,18 @@ export default {
     name: 'InputIdentifyUser',
     data(){
         return{
+            id: null,
             label: null,
-            format: 'Tekst'
+            format: 'Text'
         }
     },
+    props: {
+        propId: Number,
+    },
     methods: {
-        handleData(event: any){ 
-            console.log(event);
+        handleData(){ 
             if (this.label && this.format) {
-                this.$emit('inputData', { label: this.label, format: this.format });          
+                this.$emit('inputData', { id: this.propId, label: this.label, format: this.format });          
             }
         }
     }
@@ -35,7 +39,7 @@ export default {
         <div class="mt-2">
             <label for="format" class="block text-sm font-medium leading-6 text-gray-900">Fromat</label>
             <select v-model="format" @change="handleData" id="format" name="format"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" >
+                class="block w-60 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" >
                     <option>Tekst</option>
                     <option>E-mail</option>
             </select>
