@@ -48,8 +48,11 @@ export default {
         this.IdQuestionArr.push(newIdQ)
       },
       addCustomQuestion(){
-        let newQuestion = {
-          id: uuidv4()
+        let newQuestion: Question = {
+          id: uuidv4(),
+          correct_answer: 1,
+          head: '',
+          body: [],
         }
         this.QuestionArr.push(newQuestion)
       }
