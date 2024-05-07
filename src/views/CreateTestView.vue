@@ -2,7 +2,7 @@
 import { PlusIcon } from '@heroicons/vue/24/outline'
 import InputIdentifyUser from '../components/InputIdentifyUser.vue';
 import {IdQuestion} from '../interface/id_question'
-import AppCreateCustomQuestion from '../components/AppCreateCustomQuestion.vue';
+import AppCustomQuestion from '../components/AppCustomQuestion.vue';
 import { v4 as uuidv4 } from 'uuid';
 
 interface DataInterface {
@@ -16,7 +16,7 @@ export default {
     components: {
         PlusIcon,
         InputIdentifyUser,
-        AppCreateCustomQuestion
+        AppCustomQuestion
     },
     data(){
       return {
@@ -71,10 +71,10 @@ export default {
                 </div> -->
             </div>
         </div>
-        <AppCreateCustomQuestion @remove-question="handleRemoveQuestion" :id="index" v-for="(question, index) in QuestionArr" :key="index"></AppCreateCustomQuestion>
-        <div @click="addCustomQuestion" class="flex justify-center bg-white mt-6 w-full h-24 cursor-pointer p-1 border-solid border-indigo-600 text-indigo-600 rounded-2xl border-2 hover:bg-indigo-600  hover:text-white transition-all">
-            <PlusIcon class="w-8 text-inherit"></PlusIcon>
-        </div>
+        <AppCustomQuestion @remove-question="handleRemoveQuestion" :id="index" v-for="(question, index) in QuestionArr" :key="question.id"></AppCustomQuestion>
+        <button @click.prevent="addCustomQuestion" class="flex justify-center bg-white mt-6 w-full h-24 cursor-pointer p-1 border-solid border-indigo-600 text-indigo-600 rounded-2xl border-2 hover:bg-indigo-600  hover:text-white transition-all">
+            <PlusIcon class="w-8 text-inherit self-center"></PlusIcon>
+        </button>
       </div>
     </form>
   </div>
