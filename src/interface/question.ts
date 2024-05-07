@@ -1,7 +1,8 @@
 import { Answer } from "./answer";
 
 export interface Question{
-    layout: string;
+    id: string
+    layout?: string;
     correct_answer: number;
     head: string;
     body: Answer[];

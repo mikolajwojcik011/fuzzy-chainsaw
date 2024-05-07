@@ -4,10 +4,12 @@ import InputIdentifyUser from '../components/InputIdentifyUser.vue';
 import {IdQuestion} from '../interface/id_question'
 import AppCustomQuestion from '../components/AppCustomQuestion.vue';
 import { v4 as uuidv4 } from 'uuid';
+import ButtonAdd from '../components/ButtonAdd.vue';
+import { Question } from '../interface/question';
 
 interface DataInterface {
   IdQuestionArr: IdQuestion[],
-  QuestionArr: [],
+  QuestionArr: Question[],
 }
 
 
@@ -16,7 +18,8 @@ export default {
     components: {
         PlusIcon,
         InputIdentifyUser,
-        AppCustomQuestion
+        AppCustomQuestion,
+        ButtonAdd
     },
     data(){
       return {
@@ -33,8 +36,8 @@ export default {
           this.IdQuestionArr[data.id].label = data.label
         }
       },
-      handleRemoveQuestion(data){
-        this.QuestionArr.splice(data.id, 1)
+      handleRemoveQuestion({index}:any){
+        this.QuestionArr.splice(index, 1)
       },
       addIdQuestion(){
         let newIdQ: IdQuestion = {
@@ -61,7 +64,7 @@ export default {
       </div>
     </header>
     <form>
-      <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8 pb-80">
         <div class="w-full bg-gray-100 rounded-xl py-6 sm:px-6 lg:px-8">
             <h2 class="text-2xl font-bold tracking-tight text-gray-900">Pytanie identyfikujące</h2>
             <div class="py-5 flex flex-wrap gap-y-8 items-end">
@@ -71,10 +74,8 @@ export default {
                 </div> -->
             </div>
         </div>
-        <AppCustomQuestion @remove-question="handleRemoveQuestion" :id="index" v-for="(question, index) in QuestionArr" :key="question.id"></AppCustomQuestion>
-        <button @click.prevent="addCustomQuestion" class="flex justify-center bg-white mt-6 w-full h-24 cursor-pointer p-1 border-solid border-indigo-600 text-indigo-600 rounded-2xl border-2 hover:bg-indigo-600  hover:text-white transition-all">
-            <PlusIcon class="w-8 text-inherit self-center"></PlusIcon>
-        </button>
+        <AppCustomQuestion @remove-question="handleRemoveQuestion" :propId="question.id" :index="index" v-for="(question, index) in QuestionArr" :key="question.id"></AppCustomQuestion>
+        <ButtonAdd @click.prevent="addCustomQuestion" class="h-24"></ButtonAdd>
       </div>
     </form>
   </div>
