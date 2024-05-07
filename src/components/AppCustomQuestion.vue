@@ -39,7 +39,7 @@ export default {
     <div ref="scrto" class="flex flex-col w-full bg-gray-100 rounded-xl pt-6 lg:pb-8 sm:pb-6 my-6 sm:px-6 lg:px-8">
         <div class="flex w-full">
             <div class="flex w-1/4 items-start ">
-                <h2 class="text-2xl font-bold tracking-tight text-gray-900 w-1/4">{{ index + 1 }}.</h2>
+                <h2 v-if="index" class="text-2xl font-bold tracking-tight text-gray-900 w-1/4">{{ index + 1 }}.</h2>
             </div>
             <div class="flex w-9/12 justify-end">
                 <button @click="handleRemoveQuestion" class="text-rose-600 hover:text-rose-500">
