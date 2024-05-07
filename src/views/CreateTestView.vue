@@ -52,7 +52,7 @@ export default {
           id: uuidv4(),
           correct_answer: 1,
           head: '',
-          body: [],
+          answerArr: [],
         }
         this.QuestionArr.push(newQuestion)
       }
@@ -78,7 +78,7 @@ export default {
             </div>
         </div>
         <AppCustomQuestion @remove-question="handleRemoveQuestion" :propId="question.id" :index="index" v-for="(question, index) in QuestionArr" :key="question.id"></AppCustomQuestion>
-        <ButtonAdd @click.prevent="addCustomQuestion" class="h-24"></ButtonAdd>
+        <ButtonAdd @click.prevent="addCustomQuestion" class="h-24 w-full"></ButtonAdd>
       </div>
     </form>
   </div>

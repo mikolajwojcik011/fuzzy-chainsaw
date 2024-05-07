@@ -1,4 +1,5 @@
 export interface Answer {
-    a_index: number;
+    id: string;
     content: string;
+    is_true: boolean;
 }
