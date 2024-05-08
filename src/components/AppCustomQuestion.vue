@@ -2,10 +2,15 @@
 import { PlusIcon, CheckCircleIcon } from '@heroicons/vue/24/outline'
 import ButtonAdd from './ButtonAdd.vue'
 import ButtonRemove from './ButtonRemove.vue'
-import { Question } from '../interface/question';
 import InputAnswer, { DataInputAnswer } from './InputAnswer.vue';
 import { Answer } from '../interface/answer';
-import { v4 as uuidv4 } from 'uuid';
+import { UniversalTestCreationEvent } from '../interface/universal_test_creation_event';
+
+interface AppCustomQuestionData {
+    head: string;
+    qIndex: number;
+    answerArr: Answer[]
+}
 
 export default {
     name: 'CustomQuestion',
@@ -18,37 +23,33 @@ export default {
     },
     data(){
         return{
-                id: this.propId,
-                layout: '',
-                head: '',
-                answerArr: [],
-        } as Question
+            head: '',
+            qIndex: this.qPropIndex,   
+            answerArr: this.qPropAnswerArr,
+        } as AppCustomQuestionData
     },
     props: {
-        propId: String,
-        index: Number
+        qPropAnswerArr: Array<Answer>,
+        qPropIndex: Number
     },
     methods: {
         handleRemoveQuestion(){
-            this.$emit('removeQuestion', {index: this.index})
+            this.$emit('removeQuestion', {qIndex: this.qIndex} as UniversalTestCreationEvent)
         },
-        handleUpdateContent({index, content}: DataInputAnswer){
-            console.log('j2');
-            this.answerArr[index].content = content
+        handleAddAnswer(){
+            this.$emit('addAnswer', {qIndex: this.qIndex} as UniversalTestCreationEvent)
         },
-        addAnswer(){
-            let answer: Answer = {
-                id: uuidv4(),
-                content: 'test',
-                is_true: false
-            }
-            this.answerArr.push(answer)
+        handleRemoveAnswer(aIndex: Number){
+            this.$emit('removeAnswer', {qIndex: this.qIndex, aIndex: aIndex} as UniversalTestCreationEvent)
         },
-        removeAnswer(index: number){
-            this.answerArr.splice(index, 1)
+        handleMarkAsCorrect(aIndex: number){
+            this.$emit('markAsCorrect', {qIndex: this.qIndex, aIndex: aIndex} as UniversalTestCreationEvent)
         },
-        markAsCorrect(index: number){
-            this.answerArr[index].is_true = !this.answerArr[index].is_true
+        handleUpdateContent(payload: UniversalTestCreationEvent){
+            this.$emit('updateContent', payload as UniversalTestCreationEvent)
+        },
+        handleUpdateHead(){
+            this.$emit('updateHead', {qIndex: this.qIndex, payload: this.head} as UniversalTestCreationEvent)
         },
         getClassObj(is_true: boolean){
             if(is_true) return { 'text-emerald-600': true, 'text-gray-600': false }
@@ -66,7 +67,7 @@ export default {
     <div ref="scrto" class="flex flex-col w-full bg-gray-100 rounded-xl pt-6 lg:pb-8 sm:pb-6 my-6 sm:px-6 lg:px-8">
         <div class="flex w-full">
             <div class="flex w-1/4 items-start ">
-                <h2 v-if="index" class="text-2xl font-bold tracking-tight text-gray-900 w-1/4">{{ index + 1 }}.</h2>
+                <h2 class="text-2xl font-bold tracking-tight text-gray-900 w-1/4">{{ qIndex + 1 }}.</h2>
             </div>
             <div class="flex w-9/12 justify-end">
                 <ButtonRemove @click="handleRemoveQuestion"></ButtonRemove>
@@ -76,21 +77,21 @@ export default {
             <div class="flex flex-col w-7/12 self-center">
               <label for="head" class="block text-xl font-medium leading-6 text-gray-900 self-center">Treść pytania</label>
               <div class="mt-8">
-                <textarea v-model="head" id="head" name="head" type="text"
+                <textarea v-model="head" @input="handleUpdateHead" id="head" name="head" type="text"
                   class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
               </div>
             </div>
             <div class="w-full flex flex-col min-h-80 mt-20">
                 <h3 class="block mb-4 text-xl font-medium leading-6 text-gray-900 self-center">Odpowiedzi:</h3>
                 <ol class="flex w-full flex-col justify-center">
-                    <li v-for="({id, is_true}, index) in answerArr" class="mt-4 self-center w-9/12">
+                    <li v-for="({id, is_true, content}, aIndex) in answerArr" class="mt-4 self-center w-9/12">
                         <div class="w-full gap-2 flex justify-end p-2 bg-gray-100 rounded-t-md ring-1 ring-inset ring-gray-300">
-                            <CheckCircleIcon @click.prevent="markAsCorrect(index)" :class="[getClassObj(is_true), 'w-8 cursor-pointer hover:text-emerald-500']"></CheckCircleIcon>
-                            <ButtonRemove @click.prevent="removeAnswer(index)"></ButtonRemove>
+                            <CheckCircleIcon @click.prevent="handleMarkAsCorrect(aIndex)" :class="[getClassObj(is_true),'w-8 cursor-pointer hover:text-emerald-500']"></CheckCircleIcon>
+                            <ButtonRemove @click.prevent="handleRemoveAnswer(aIndex)"></ButtonRemove>
                         </div>
-                        <InputAnswer @input-content="handleUpdateContent" :prop-index="index" :key="id"></InputAnswer>
+                        <InputAnswer @update-content="handleUpdateContent" :aPropIndex="aIndex" :qPropIndex="qIndex" :propContent="content" :key="id"></InputAnswer>
                     </li>
-                    <ButtonAdd @click.prevent="addAnswer" class="h-9 w-9/12 self-center rounded-lg"></ButtonAdd>
+                    <ButtonAdd @click.prevent="handleAddAnswer" class="h-9 w-9/12 self-center rounded-lg"></ButtonAdd>
                 </ol>
             </div>
         </div>
