@@ -4,6 +4,7 @@ import ButtonAdd from './ButtonAdd.vue'
 import ButtonRemove from './ButtonRemove.vue'
 import { Answer } from '../interface/answer';
 import { UniversalTestCreationEvent } from '../interface/universal_test_creation_event';
+import InputAnswer from './InputAnswer.vue';
 
 interface AppCustomQuestionData {
     head: string;
@@ -17,7 +18,8 @@ export default {
         PlusIcon,
         ButtonAdd,
         ButtonRemove,
-        CheckCircleIcon
+        CheckCircleIcon,
+        InputAnswer
     },
     data(){
         return{
