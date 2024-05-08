@@ -10,8 +10,6 @@ import { Question } from '../interface/question';
 import { Answer } from '../interface/answer';
 
 import { v4 as uuidv4 } from 'uuid';
-import { DataInputAnswer } from '../components/InputAnswer.vue';
-import { UniversalTestCreationEvent } from '../interface/universal_test_creation_event';
 
 
 interface DataInterface {

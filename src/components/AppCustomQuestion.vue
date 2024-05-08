@@ -2,7 +2,6 @@
 import { PlusIcon, CheckCircleIcon } from '@heroicons/vue/24/outline'
 import ButtonAdd from './ButtonAdd.vue'
 import ButtonRemove from './ButtonRemove.vue'
-import InputAnswer, { DataInputAnswer } from './InputAnswer.vue';
 import { Answer } from '../interface/answer';
 import { UniversalTestCreationEvent } from '../interface/universal_test_creation_event';
 
@@ -17,7 +16,6 @@ export default {
     components:{
         PlusIcon,
         ButtonAdd,
-        InputAnswer,
         ButtonRemove,
         CheckCircleIcon
     },
