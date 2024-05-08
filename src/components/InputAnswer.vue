@@ -1,7 +1,10 @@
 <script lang="ts">
+import { UniversalTestCreationEvent } from '../interface/universal_test_creation_event';
+
 
 export interface DataInputAnswer {
-    index: number
+    aIndex: number,
+    qIndex: number,
     content: string,
 }
 
@@ -9,19 +12,22 @@ export interface DataInputAnswer {
         name: 'InputAnswer',
         data(){
             return {
-                index: this.propIndex,
-                content: ''
+                qIndex: this.qPropIndex,
+                aIndex: this.aPropIndex,
+                content: this.propContent,
             }as DataInputAnswer
         },
         props: {
-            propIndex: Number
+            aPropIndex: Number,
+            qPropIndex: Number,
+            propContent: String,
         },
         components: {
         },
         methods: {
             handleUpdateContent(){
-                console.log(this.propIndex);
-                this.$emit('inputContent', {index: this.index ,content: this.content})
+                console.log('j1');
+                this.$emit('updateContent', {qIndex: this.qIndex, aIndex: this.aIndex, payload: this.content} as UniversalTestCreationEvent)
             }
         }
     }

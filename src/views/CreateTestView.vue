@@ -1,11 +1,16 @@
 <script lang="ts">
 import { PlusIcon } from '@heroicons/vue/24/outline'
+
 import InputIdentifyUser from '../components/InputIdentifyUser.vue';
-import {IdQuestion} from '../interface/id_question'
 import AppCustomQuestion from '../components/AppCustomQuestion.vue';
-import { v4 as uuidv4 } from 'uuid';
 import ButtonAdd from '../components/ButtonAdd.vue';
+
+import {IdQuestion} from '../interface/id_question'
 import { Question } from '../interface/question';
+import { Answer } from '../interface/answer';
+
+import { v4 as uuidv4 } from 'uuid';
+
 
 interface DataInterface {
   IdQuestionArr: IdQuestion[],
@@ -26,7 +31,9 @@ export default {
         IdQuestionArr: [
           {id: 0, label: 'Imię', format: 'Tekst'}
         ],
-        QuestionArr: []
+        QuestionArr: [
+          
+        ]
       } as DataInterface
     },
     methods: {
@@ -36,8 +43,28 @@ export default {
           this.IdQuestionArr[data.id].label = data.label
         }
       },
-      handleRemoveQuestion({index}:any){
-        this.QuestionArr.splice(index, 1)
+      handleRemoveQuestion({qIndex}: any){
+        this.QuestionArr.splice(qIndex, 1)
+      },
+      handleAddAnswer({qIndex}: any){
+        let answer: Answer = {
+                id: uuidv4(),
+                content: '',
+                is_true: false
+            }
+        if(this.QuestionArr[qIndex].answerArr) this.QuestionArr[qIndex].answerArr.push(answer)
+      },
+      handleRemoveAnswer({qIndex, aIndex}: any){
+        this.QuestionArr[qIndex].answerArr.splice(aIndex, 1)
+      },
+      handleMarkAsCorrect({qIndex, aIndex}: any){
+        this.QuestionArr[qIndex].answerArr[aIndex].is_true = !this.QuestionArr[qIndex].answerArr[aIndex].is_true
+      },
+      handleUpdateHead({qIndex, payload}: any){
+        this.QuestionArr[qIndex].head = payload
+      },
+      handleUpdateContent({qIndex, aIndex, payload}: any){
+        this.QuestionArr[qIndex].answerArr[aIndex].content = payload
       },
       addIdQuestion(){
         let newIdQ: IdQuestion = {
@@ -49,10 +76,10 @@ export default {
       },
       addCustomQuestion(){
         let newQuestion: Question = {
-          id: uuidv4(),
-          head: '',
-          answerArr: [],
-        }
+            id: uuidv4(),
+            head: '',
+            answerArr: [],
+          }
         this.QuestionArr.push(newQuestion)
       }
     }
@@ -76,7 +103,18 @@ export default {
                 </div> -->
             </div>
         </div>
-        <AppCustomQuestion @remove-question="handleRemoveQuestion" :propId="question.id" :index="index" v-for="(question, index) in QuestionArr" :key="question.id"></AppCustomQuestion>
+        <AppCustomQuestion 
+          @remove-question="handleRemoveQuestion" 
+          @add-answer="handleAddAnswer"
+          @remove-answer="handleRemoveAnswer"
+          @mark-as-correct="handleMarkAsCorrect"
+          @update-content="handleUpdateContent"
+          @update-head="handleUpdateHead"
+          v-for="({id, answerArr}, qIndex) in QuestionArr" 
+          :qPropIndex="qIndex"
+          :qPropAnswerArr="answerArr"
+          :key="id">
+        </AppCustomQuestion>
         <ButtonAdd @click.prevent="addCustomQuestion" class="h-24 w-full"></ButtonAdd>
       </div>
     </form>
