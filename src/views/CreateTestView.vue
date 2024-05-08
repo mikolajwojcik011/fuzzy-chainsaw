@@ -50,7 +50,6 @@ export default {
       addCustomQuestion(){
         let newQuestion: Question = {
           id: uuidv4(),
-          correct_answer: 1,
           head: '',
           answerArr: [],
         }
