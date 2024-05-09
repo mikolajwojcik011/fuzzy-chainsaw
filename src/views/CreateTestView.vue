@@ -3,6 +3,7 @@ import { PlusIcon } from '@heroicons/vue/24/outline'
 
 import InputIdentifyUser from '../components/InputIdentifyUser.vue';
 import AppCustomQuestion from '../components/AppCustomQuestion.vue';
+import AppQuestionTemplate from '../components/AppQuestionTemplate.vue';
 import ButtonAdd from '../components/ButtonAdd.vue';
 
 import {IdQuestion} from '../interface/id_question'
@@ -10,6 +11,7 @@ import { Question } from '../interface/question';
 import { Answer } from '../interface/answer';
 
 import { v4 as uuidv4 } from 'uuid';
+import ButtonRemove from '../components/ButtonRemove.vue';
 
 
 interface DataInterface {
@@ -24,23 +26,24 @@ export default {
         PlusIcon,
         InputIdentifyUser,
         AppCustomQuestion,
-        ButtonAdd
+        ButtonAdd,
+        AppQuestionTemplate,
+        ButtonRemove
     },
     data(){
       return {
         IdQuestionArr: [
-          {id: 0, label: 'Imię', format: 'Tekst'}
+          {id: uuidv4(), label: '', format: ''}
         ],
         QuestionArr: [
-          
         ]
       } as DataInterface
     },
     methods: {
-      handleInputData(data: IdQuestion){
-        if(this.IdQuestionArr[data.id]){
-          this.IdQuestionArr[data.id].format = data.format
-          this.IdQuestionArr[data.id].label = data.label
+      handleInputData({index, format, label}: any){
+        if(this.IdQuestionArr[index]){
+          this.IdQuestionArr[index].format = format
+          this.IdQuestionArr[index].label = label
         }
       },
       handleRemoveQuestion({qIndex}: any){
@@ -69,9 +72,12 @@ export default {
       handleUpdateIndexStyle({qIndex, payload}: any){      
         this.QuestionArr[qIndex].index_style = payload
       },
+      removeIdQuestion(qIndex: number){
+        this.IdQuestionArr.splice(qIndex, 1)
+      },
       addIdQuestion(){
         let newIdQ: IdQuestion = {
-          id: this.IdQuestionArr.length,
+          id: uuidv4(),
           label: '',
           format: 'Text',
         }
@@ -98,15 +104,20 @@ export default {
     </header>
     <form>
       <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8 pb-80">
-        <div class="w-full bg-gray-100 rounded-xl py-6 sm:px-6 lg:px-8">
-            <h2 class="text-2xl font-bold tracking-tight text-gray-900">Pytanie identyfikujące</h2>
-            <div class="py-5 flex flex-wrap gap-y-8 items-end">
-                <InputIdentifyUser :propId="id" :propLabel="label" :propFromat="format" @input-data="handleInputData" v-for="{id, label, format} in IdQuestionArr" :key="id"></InputIdentifyUser>
-                <!-- <div @click="addIdQuestion" class="flex justify-center bg-white mt-6 w-60 h-24 cursor-pointer p-1 border-solid border-indigo-600 text-indigo-600 rounded-2xl border-2 hover:bg-indigo-600  hover:text-white  rounded-2xl border-2 transition-all">
-                    <PlusIcon class="w-8 text-inherit"></PlusIcon>
-                </div> -->
-            </div>
-        </div>
+        <AppQuestionTemplate>
+          
+        </AppQuestionTemplate>
+        <AppQuestionTemplate>
+          <div class="flex flex-wrap gap-6 justify-center">
+            <InputIdentifyUser :propId="id" :propLabel="label" :propqIndex="qIndex" :propFromat="format" @input-data="handleInputData" v-for="({id, label, format}, qIndex) in IdQuestionArr" :key="id">
+                <h2 class="w-2/3 text-md self-center tracking-tight text-gray-900 truncate">{{ id }}</h2>
+                <div class="w-1/3 flex justify-end">  
+                  <ButtonRemove @click.prevent="removeIdQuestion(qIndex)"></ButtonRemove>
+                </div>
+            </InputIdentifyUser>
+            <ButtonAdd class="w-80 mt-0 min-h-52" @click.prevent="addIdQuestion"></ButtonAdd>
+          </div>
+        </AppQuestionTemplate>
         <AppCustomQuestion 
           @remove-question="handleRemoveQuestion" 
           @add-answer="handleAddAnswer"

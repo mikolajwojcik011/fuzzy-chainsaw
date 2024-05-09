@@ -80,17 +80,17 @@ export default {
 </script>
 
 <template>
-    <div ref="scrto" class="flex flex-col w-full bg-gray-100 rounded-xl pt-6 my-6 ring-1 ring-inset ring-gray-300">
+    <div ref="scrto" class="flex flex-col w-full bg-gray-100 rounded-xl pt-2 my-6 ring-1 ring-inset ring-gray-300">
         <div class="flex w-full px-6">
             <div class="flex w-full items-start self-center">
                 <h2 class="text-lg tracking-tight text-gray-900 truncate">{{ qPropId }}</h2>
             </div>
             <div class="flex justify-end self-center">
                 <InputIndexStyle @update-index-style="handleUpdateIndexStyle"></InputIndexStyle>
-                <ButtonRemove class="ml-10" @click="handleRemoveQuestion"></ButtonRemove>
+                <ButtonRemove class="ml-4" @click="handleRemoveQuestion"></ButtonRemove>
             </div>
         </div>
-        <div class="w-full flex flex-col justify-center bg-white mt-6 py-20 sm:px-8 lg:px-10 rounded-b-xl ring-1 ring-inset ring-gray-300">
+        <div class="w-full flex flex-col justify-center bg-white mt-2 py-20 sm:px-8 lg:px-10 rounded-b-xl ring-1 ring-inset ring-gray-300">
             <div class="flex flex-col w-7/12 self-center">
               <label for="head" class="block text-xl font-medium leading-6 text-gray-900 self-center">Treść pytania</label>
               <div class="mt-8">
@@ -114,7 +114,6 @@ export default {
                     <ButtonAdd @click.prevent="handleAddAnswer" class="h-9 w-10/12 self-center rounded-lg"></ButtonAdd>
                 </ol>
             </div>
-        </div>
-        
+        </div>   
     </div>
 </template>

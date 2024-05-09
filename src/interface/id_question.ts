@@ -1,5 +1,5 @@
 export interface IdQuestion {
-    id: number;  
+    id: string;  
     label: string;
     format: string;
   }
