@@ -110,7 +110,8 @@ export default {
           @mark-as-correct="handleMarkAsCorrect"
           @update-content="handleUpdateContent"
           @update-head="handleUpdateHead"
-          v-for="({id, answerArr}, qIndex) in QuestionArr" 
+          v-for="({id, answerArr}, qIndex) in QuestionArr"
+          :qPropId="id" 
           :qPropIndex="qIndex"
           :qPropAnswerArr="answerArr"
           :key="id">

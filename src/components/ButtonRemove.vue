@@ -1,15 +1,15 @@
 <script lang="ts">
-    import { MinusCircleIcon } from '@heroicons/vue/24/solid';
+    import { XCircleIcon } from '@heroicons/vue/24/solid';
 
     export default {
         name: 'ButtonRemove',
         components: {
-            MinusCircleIcon,
+            XCircleIcon,
         }
     }
 </script>
 <template>
-    <button class="text-rose-600 hover:text-rose-500">
-        <MinusCircleIcon class="w-8"></MinusCircleIcon>
+    <button class="text-rose-600 hover:text-rose-500 transition-all">
+        <XCircleIcon class="w-8"></XCircleIcon>
     </button>
 </template>
