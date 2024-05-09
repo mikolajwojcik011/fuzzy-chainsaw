@@ -47,7 +47,6 @@ export default {
         'markAsCorrect',
         'updateContent',
         'updateHead',
-        'updateIndexStyle',
     ],
     methods: {
         handleRemoveQuestion(){
@@ -68,9 +67,6 @@ export default {
         handleUpdateHead(){
             this.$emit('updateHead', {qIndex: this.qIndex, payload: this.head} as UniversalTestCreationEvent)
         },
-        handleUpdateIndexStyle({index_style}: any){
-            this.$emit('updateIndexStyle', {qIndex: this.qIndex, payload: index_style} as UniversalTestCreationEvent)
-        }
     },
     mounted(){
         let el: any = this.$refs.scrto
