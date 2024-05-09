@@ -66,6 +66,9 @@ export default {
       handleUpdateContent({qIndex, aIndex, payload}: any){
         this.QuestionArr[qIndex].answerArr[aIndex].content = payload
       },
+      handleUpdateIndexStyle({qIndex, payload}: any){      
+        this.QuestionArr[qIndex].index_style = payload
+      },
       addIdQuestion(){
         let newIdQ: IdQuestion = {
           id: this.IdQuestionArr.length,
@@ -79,6 +82,7 @@ export default {
             id: uuidv4(),
             head: '',
             answerArr: [],
+            index_style: 1,
           }
         this.QuestionArr.push(newQuestion)
       }
@@ -110,7 +114,8 @@ export default {
           @mark-as-correct="handleMarkAsCorrect"
           @update-content="handleUpdateContent"
           @update-head="handleUpdateHead"
-          v-for="({id, answerArr}, qIndex) in QuestionArr"
+          @update-index-style="handleUpdateIndexStyle"
+          v-for="({id, answerArr, index_style}, qIndex) in QuestionArr"
           :qPropId="id" 
           :qPropIndex="qIndex"
           :qPropAnswerArr="answerArr"

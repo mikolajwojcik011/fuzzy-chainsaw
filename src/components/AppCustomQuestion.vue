@@ -3,15 +3,17 @@ import { PlusIcon } from '@heroicons/vue/24/outline'
 import { CheckCircleIcon } from '@heroicons/vue/24/solid'
 import ButtonAdd from './ButtonAdd.vue'
 import ButtonRemove from './ButtonRemove.vue'
+import ButtonMark from './ButtonMark.vue'
 import { Answer } from '../interface/answer';
 import { UniversalTestCreationEvent } from '../interface/universal_test_creation_event';
 import InputAnswer from './InputAnswer.vue';
+import InputIndexStyle from './InputIndexStyle.vue'
 
 interface AppCustomQuestionData {
     qId: string;
     head: string;
     qIndex: number;
-    answerArr: Answer[]
+    answerArr: Answer[];
 }
 
 export default {
@@ -22,6 +24,8 @@ export default {
         ButtonRemove,
         CheckCircleIcon,
         InputAnswer,
+        ButtonMark,
+        InputIndexStyle
     },
     data(){
         return{
@@ -34,8 +38,17 @@ export default {
     props: {
         qPropAnswerArr: Array<Answer>,
         qPropIndex: Number,
-        qPropId: String
+        qPropId: String,
     },
+    emits: [
+        'removeQuestion',
+        'addAnswer',
+        'removeAnswer',
+        'markAsCorrect',
+        'updateContent',
+        'updateHead',
+        'updateIndexStyle',
+    ],
     methods: {
         handleRemoveQuestion(){
             this.$emit('removeQuestion', {qIndex: this.qIndex} as UniversalTestCreationEvent)
@@ -55,10 +68,9 @@ export default {
         handleUpdateHead(){
             this.$emit('updateHead', {qIndex: this.qIndex, payload: this.head} as UniversalTestCreationEvent)
         },
-        getClassObj(is_true: boolean){
-            if(is_true) return { 'text-emerald-600': true, 'text-gray-600': false }
-            return {'text-emerald-600': false, 'text-gray-600': true }
-        },
+        handleUpdateIndexStyle({index_style}: any){
+            this.$emit('updateIndexStyle', {qIndex: this.qIndex, payload: index_style} as UniversalTestCreationEvent)
+        }
     },
     mounted(){
         let el: any = this.$refs.scrto
@@ -74,7 +86,8 @@ export default {
                 <h2 class="text-lg tracking-tight text-gray-900 truncate">{{ qPropId }}</h2>
             </div>
             <div class="flex justify-end self-center">
-                <ButtonRemove @click="handleRemoveQuestion"></ButtonRemove>
+                <InputIndexStyle @update-index-style="handleUpdateIndexStyle"></InputIndexStyle>
+                <ButtonRemove class="ml-10" @click="handleRemoveQuestion"></ButtonRemove>
             </div>
         </div>
         <div class="w-full flex flex-col justify-center bg-white mt-6 py-20 sm:px-8 lg:px-10 rounded-b-xl ring-1 ring-inset ring-gray-300">
@@ -91,10 +104,10 @@ export default {
                     <li v-for="({id, is_true, content}, aIndex) in answerArr" class="mt-4 self-center w-10/12 bg-gray-100 ring-1 ring-inset ring-gray-300 rounded-md">
                         <div class="w-full text-md gap-2 px-4 flex justify-end p-2">
                             <h2 class="w-full self-center truncate">{{ id }}</h2>
-                            <button @click.prevent="handleMarkAsCorrect(aIndex)">
-                                <CheckCircleIcon  :class="[getClassObj(is_true),'self-center w-8 cursor-pointer hover:text-emerald-500 transition-all']"></CheckCircleIcon>
-                            </button>
-                            <ButtonRemove class="self-center" @click.prevent="handleRemoveAnswer(aIndex)"></ButtonRemove>
+                            <div class="flex ml-4">
+                                <ButtonMark :propIsTrue="is_true" @click.prevent="handleMarkAsCorrect(aIndex)"></ButtonMark>
+                                <ButtonRemove @click.prevent="handleRemoveAnswer(aIndex)"></ButtonRemove>
+                            </div>    
                         </div>
                         <InputAnswer @update-content="handleUpdateContent" :aPropIndex="aIndex" :qPropIndex="qIndex" :propContent="content" :key="id"></InputAnswer>
                     </li>

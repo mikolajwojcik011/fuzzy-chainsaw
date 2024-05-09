@@ -26,7 +26,6 @@ export interface DataInputAnswer {
         },
         methods: {
             handleUpdateContent(){
-                console.log('j1');
                 this.$emit('updateContent', {qIndex: this.qIndex, aIndex: this.aIndex, payload: this.content} as UniversalTestCreationEvent)
             }
         }
