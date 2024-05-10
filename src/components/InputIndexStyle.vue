@@ -16,7 +16,6 @@ export default {
       	optionArr: [
         	{ id: 1, label: 'A.' },
         	{ id: 2, label: '1.' },
-	        { id: 3, label: 'I.' }
 		],
 	      selectedOption: 1,
 	    } as Data
@@ -30,8 +29,8 @@ export default {
 			this.selectedOption = optionId
     	},
 		getClassObj(optionId: number) {
-			if(optionId != this.selectedOption) return {'bg-gray-600':true, 'bg-emerald-600':false, 'w-11': true, 'w-16': false}
-			return {'bg-emerald-600':true, 'bg-gray-600':false, 'w-16': true, 'w-11': false }
+			if(optionId != this.selectedOption) return {'bg-gray-600':true, 'bg-emerald-600':false, 'w-10': true, 'w-16': false}
+			return {'bg-emerald-600':true, 'bg-gray-600':false, 'w-16': true, 'w-10': false }
 		}
   	}
 }
@@ -39,6 +38,7 @@ export default {
 
 <template>
 	<div class="flex ring-1 p-1 ring-inset ring-gray-300 gap-1 rounded-xl bg-white">
+		<h3 class="px-2 font-medium">Numerowanie:</h3>
 		<div v-for="{id, label} in optionArr" 
 			:key="id" 
 			:class="[getClassObj(id),'inline-block transition-all self-center font-medium text-white cursor-pointer h-6 flex rounded-lg hover:bg-emerald-500']">

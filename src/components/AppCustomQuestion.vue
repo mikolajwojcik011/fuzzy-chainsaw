@@ -111,7 +111,7 @@ export default {
                         </div>
                         <InputAnswer @update-content="handleUpdateContent" :aPropIndex="aIndex" :qPropIndex="qIndex" :propContent="content" :key="id"></InputAnswer>
                     </li>
-                    <ButtonAdd @click.prevent="handleAddAnswer" class="h-9 w-10/12 self-center rounded-lg"></ButtonAdd>
+                    <ButtonAdd @click.prevent="handleAddAnswer" class="h-9 w-10/12 self-center rounded-lg mt-4"></ButtonAdd>
                 </ol>
             </div>
         </div>   
