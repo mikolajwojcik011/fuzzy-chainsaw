@@ -5,14 +5,15 @@ import InputIdentifyUser from '../components/InputIdentifyUser.vue';
 import AppCustomQuestion from '../components/AppCustomQuestion.vue';
 import AppQuestionTemplate from '../components/AppQuestionTemplate.vue';
 import ButtonAdd from '../components/ButtonAdd.vue';
+import ButtonRemove from '../components/ButtonRemove.vue';
 
 import {IdQuestion} from '../interface/id_question'
 import { Question } from '../interface/question';
 import { Answer } from '../interface/answer';
+import { TestSchema } from '../interface/test_schema';
 
 import { v4 as uuidv4 } from 'uuid';
-import ButtonRemove from '../components/ButtonRemove.vue';
-import { TestSchema } from '../interface/test_schema';
+import { generate } from 'random-words';
 
 export default {
     name: "CreateTestView",
@@ -85,6 +86,10 @@ export default {
           }
         this.QuestionArr.push(newQuestion)
       },
+      generateCodes(){
+        this.private_key = generate({ exactly: 1, wordsPerString: 2, separator: "-", minLength: 4, maxLength: 8 })[0] 
+        this.public_key = generate({ exactly: 1, wordsPerString: 2, separator: "-", minLength: 4, maxLength: 8 })[0]
+      },
       submitFrom(){
         let payload = {
           public_key: this.public_key,
@@ -94,8 +99,10 @@ export default {
         } as TestSchema
 
         console.log(payload);
-        
       }
+    },
+    mounted(){
+      this.generateCodes()
     }
 }
 </script>
@@ -113,18 +120,19 @@ export default {
             <div class="w-1/3">
               <label for="public_key" class="block text-sm font-medium leading-6 text-gray-900">Klucz publiczny</label>
               <div class="mt-2">
-                <input :v-model="public_key" id="public_key" name="public_key" type="text"
+                <input v-model="public_key" id="public_key" name="public_key" type="text"
                   class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
               </div>
             </div>
             <div class="w-1/3">
               <label for="private-key" class="block text-sm font-medium leading-6 text-gray-900">Klucz prywatny</label>
               <div class="mt-2">
-                <input :v-model="private_key" id="private-key" name="private-key" type="text"
+                <input v-model="private_key" id="private-key" name="private-key" type="text"
                   class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
               </div>
             </div>
           </div>
+          <button @click="generateCodes">wygeneruj kody</button>
         </AppQuestionTemplate>
         <AppQuestionTemplate :header="'Pytanie identyfikujące'">
           <div class="flex flex-wrap gap-6 justify-center">
