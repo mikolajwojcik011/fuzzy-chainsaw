@@ -89,8 +89,8 @@ export default {
         let payload = {
           public_key: this.public_key,
           private_key: this.private_key,
-          questionArr: this.QuestionArr,
-          idQuestionArr: this.IdQuestionArr,
+          QuestionArr: this.QuestionArr,
+          IdQuestionArr: this.IdQuestionArr,
         } as TestSchema
 
         console.log(payload);
