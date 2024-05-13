@@ -170,7 +170,7 @@ export default {
           :qPropIndex="qIndex" :qPropAnswerArr="answerArr" :key="id">
         </AppCustomQuestion>
         <div class="fixed bottom-6 left-0 right-0 z-10 w-full h-24 flex justify-center sm:px-6 lg:px-8">
-          <div class="flex w-1280 gap-6 bg-gray-100 ring-1 ring-inset ring-gray-300 rounded-xl p-6">
+          <div class="flex gap-6 bg-gray-100 ring-1 ring-inset ring-gray-300 rounded-xl p-6">
             <button @click.prevent="submitFrom" 
               class="flex self-center rounded-md bg-indigo-600 px-10 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
               Zapisz test
