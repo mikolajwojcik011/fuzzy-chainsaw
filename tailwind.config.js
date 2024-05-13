@@ -7,7 +7,11 @@ export default {
     "./src/**/*",
   ],
   theme: {
-    extend: {},
+    extend: {
+      width: {
+        '1280': '80rem',
+      }
+    },
   },
   plugins: [
     require('@tailwindcss/forms'),

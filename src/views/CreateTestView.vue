@@ -86,7 +86,7 @@ export default {
           }
         this.QuestionArr.push(newQuestion)
       },
-      generateCodes(){
+      generateKeys(){
         this.private_key = generate({ exactly: 1, wordsPerString: 2, separator: "-", minLength: 4, maxLength: 8 })[0] 
         this.public_key = generate({ exactly: 1, wordsPerString: 2, separator: "-", minLength: 4, maxLength: 8 })[0]
       },
@@ -98,23 +98,38 @@ export default {
           IdQuestionArr: this.IdQuestionArr,
         } as TestSchema
 
-        console.log(payload);
-      }
+        fetch('http://127.0.0.1:5000/create-test', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        }).then(res => {
+          if(!res.ok){
+            throw new Error('Not OK');
+          }
+          return res.json()
+        }).then(data => {
+          console.log('Test created with ID:', data._id);
+        }).catch(err => {
+          console.error('There was a problem with the fetch operation:', err);
+        })
+      },
     },
     mounted(){
-      this.generateCodes()
+      this.generateKeys()
     }
 }
 </script>
 <template>
-  <div class="min-h-full">
+  <div class="min-h-screen">
     <header class="bg-white shadow">
-      <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <div class="mx-auto px-4 py-6 sm:px-6 lg:px-8">
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">Tworzenie testu</h1>
       </div>
     </header>
     <form @submit.prevent="submitFrom">
-      <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8 pb-80">
+      <div class="relative mx-auto max-w-7xl min-h-screen pt-6 pb-32 sm:px-6 lg:px-8">
         <AppQuestionTemplate :header="'Klucze dostępu'">
           <div class="flex justify-center gap-6">
             <div class="w-1/3">
@@ -132,7 +147,9 @@ export default {
               </div>
             </div>
           </div>
-          <button @click="generateCodes">wygeneruj kody</button>
+            <button type="submit"
+              @click.prevent="generateKeys"
+              class="self-center mt-10 w-1/3 flex justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Wygeneruj klucze</button>
         </AppQuestionTemplate>
         <AppQuestionTemplate :header="'Pytanie identyfikujące'">
           <div class="flex flex-wrap gap-6 justify-center">
@@ -152,8 +169,18 @@ export default {
           @update-index-style="handleUpdateIndexStyle" v-for="({id, answerArr}, qIndex) in QuestionArr" :qPropId="id"
           :qPropIndex="qIndex" :qPropAnswerArr="answerArr" :key="id">
         </AppCustomQuestion>
-        <ButtonAdd @click.prevent="addCustomQuestion" class="h-24 w-full"></ButtonAdd>
-        <button>submit</button>
+        <div class="fixed bottom-6 left-0 right-0 z-10 w-full h-24 flex justify-center sm:px-6 lg:px-8">
+          <div class="flex w-1280 gap-6 bg-gray-100 ring-1 ring-inset ring-gray-300 rounded-xl p-6">
+            <button @click.prevent="submitFrom" 
+              class="flex self-center rounded-md bg-indigo-600 px-10 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+              Zapisz test
+            </button>
+            <button @click.prevent="addCustomQuestion" class="h-9 w-52 px-6 rounded-lg self-center justify-around flex bg-white cursor-pointer py-1 border-dashed border-indigo-600 text-indigo-600 border-2 hover:border-solid transition-all">
+              <h3>Dodaj pytanie</h3>
+              <PlusIcon class="w-6 h-6 text-inherit self-center"></PlusIcon>
+            </button>
+          </div>
+        </div>
       </div>
     </form>
   </div>
