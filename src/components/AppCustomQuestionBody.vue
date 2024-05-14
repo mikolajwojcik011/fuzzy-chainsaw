@@ -1,16 +1,8 @@
 <script lang="ts">
-import ButtonMark from '../components/ButtonMark.vue';
-import InputAnswer from '../components/InputAnswer.vue';
-import ButtonRemove from '../components/ButtonRemove.vue';
-import ButtonAdd from '../components/ButtonAdd.vue';
-
 
 export default {
     name: 'AppCustomQuestionBody',
     components: {
-        ButtonAdd,
-        ButtonRemove,
-        InputAnswer
     }
 }
 </script>
