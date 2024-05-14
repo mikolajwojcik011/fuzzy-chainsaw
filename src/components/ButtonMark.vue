@@ -8,7 +8,7 @@ export default {
         CheckCircleIcon
     },
     props: {
-        propIsTrue: Boolean
+        isTrue: Boolean
     },
     methods: {
         getClassObj(is_true: boolean){
@@ -20,6 +20,6 @@ export default {
 </script>
 <template>
     <button>
-        <CheckCircleIcon  :class="[getClassObj(propIsTrue),'w-8 cursor-pointer hover:text-emerald-500 transition-all']"></CheckCircleIcon>
+        <CheckCircleIcon  :class="[getClassObj(isTrue),'w-8 cursor-pointer hover:text-emerald-500 transition-all']"></CheckCircleIcon>
     </button>    
 </template>
