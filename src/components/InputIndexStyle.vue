@@ -20,12 +20,15 @@ export default {
 	      selectedOption: 1,
 	    } as Data
 	  },
+	  props: {
+		qInx: Number
+	  },
 	  emits: [
 		'updateIndexStyle',
 	  ],
 	  methods: {
     	handleUpdateIndexStyle(optionId: number) {
-      		this.$emit('updateIndexStyle', {index_style: optionId})
+      		this.$emit('updateIndexStyle', {qInx: this.qInx ,index_style: optionId})
 			this.selectedOption = optionId
     	},
 		getClassObj(optionId: number) {
