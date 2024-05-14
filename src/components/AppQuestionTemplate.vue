@@ -1,9 +1,13 @@
-<script lanf="ts">
+<script lang="ts">
 export default {
     name: 'AppQuestionTemplate',
     props: {
         header: String
     },
+    mounted(){
+        let el: any = this.$refs.scrto
+        el.scrollIntoView({ behavior: 'smooth' })
+    }
 }
 </script>
 
