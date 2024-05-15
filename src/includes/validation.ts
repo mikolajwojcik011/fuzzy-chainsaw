@@ -16,6 +16,7 @@ import {
     not_one_of,
     required,
 } from "@vee-validate/rules";
+import { stringify } from "uuid";
 
 interface FieldContext {
   field: string; // The field's name or label (see next section)
@@ -26,7 +27,6 @@ interface FieldContext {
     params?: any[]; // any params sent to it
   };
 }
-
 
 interface Messages {
   [key: string]: string;
@@ -51,22 +51,26 @@ export default {
         defineRule("country_excluded", not_one_of)
 
         configure({
-            generateMessage: (ctx: FieldContext) => {
+            generateMessage: ({field, rule}) => {
                 const messages: Messages = {
-                required: `The filed ${ctx.field} is required.`,
-                min: `The filed ${ctx.field} is to short.`,
-                max: `The filed ${ctx.field} is to long.`,
-                alpha_spaces: `The filed ${ctx.field} may only contain alphabetic characters and spaces.`,
-                email: `The filed ${ctx.field} must be a valid email.`,
-                min_value: `The filed ${ctx.field} is to low.`,
-                max_value: `The filed ${ctx.field} is to high.`,
-                excluded: `You are not allowed to use this value for the field ${ctx.field}.`,
+                required: `The filed ${field} is required.`,
+                min: `The filed ${field} is to short.`,
+                max: `The filed ${field} is to long.`,
+                alpha_spaces: `The filed ${field} may only contain alphabetic characters and spaces.`,
+                email: `The filed ${field} must be a valid email.`,
+                min_value: `The filed ${field} is to low.`,
+                max_value: `The filed ${field} is to high.`,
+                excluded: `You are not allowed to use this value for the field ${field}.`,
                 country_excluded: `Due to restrictions, we do not accept users from this location`,
                 passwords_mismatch: `The passwords don't match`,
                 tos: `You must accept terms of service`,
                 };
                 
-                const message: string = messages[ctx.rule.name] ? messages[ctx.rule.name] : `The field ${ctx.field} is invalid`
+                 let message: string = 'cos chujowo'
+                
+                if(rule){
+                    message = messages[rule.name] ? messages[rule.name] : `The field ${field} is invalid`
+                }
                 return message;
             },
 
