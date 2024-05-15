@@ -16,17 +16,6 @@ import {
     not_one_of,
     required,
 } from "@vee-validate/rules";
-import { stringify } from "uuid";
-
-interface FieldContext {
-  field: string; // The field's name or label (see next section)
-  value: any; // the field's current value
-  form: Record<string, any>; // other values in the form
-  rule: {
-    name: string; //the rule name
-    params?: any[]; // any params sent to it
-  };
-}
 
 interface Messages {
   [key: string]: string;
