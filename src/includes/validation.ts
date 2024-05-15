@@ -17,7 +17,16 @@ import {
     required,
 } from "@vee-validate/rules";
 
-import { ValidationContext } from 'vee-validate';
+interface FieldContext {
+  field: string; // The field's name or label (see next section)
+  value: any; // the field's current value
+  form: Record<string, any>; // other values in the form
+  rule: {
+    name: string; //the rule name
+    params?: any[]; // any params sent to it
+  };
+}
+
 
 interface Messages {
   [key: string]: string;
@@ -42,7 +51,7 @@ export default {
         defineRule("country_excluded", not_one_of)
 
         configure({
-            generateMessage: (ctx: ValidationContext) => {
+            generateMessage: (ctx: FieldContext) => {
                 const messages: Messages = {
                 required: `The filed ${ctx.field} is required.`,
                 min: `The filed ${ctx.field} is to short.`,
