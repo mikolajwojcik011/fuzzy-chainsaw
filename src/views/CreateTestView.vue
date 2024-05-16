@@ -42,9 +42,6 @@ export default {
 			} as TestSchema
     },
     methods: {
-      justTest(){
-        console.log('jtest')
-      },
        handleUpdateIndexStyle({qInx ,index_style}: any){
         this.QuestionArr[qInx].index_style = index_style
       },
