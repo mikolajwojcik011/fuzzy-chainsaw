@@ -18,7 +18,7 @@ import InputIndexStyle from '../components/InputIndexStyle.vue';
 import ButtonMark from '../components/ButtonMark.vue';
 import InputAnswer from '../components/InputAnswer.vue';
 import AppCustomQuestionBody from '../components/AppCustomQuestionBody.vue';
-
+//just jetbrains test
 export default {
     name: "CreateTestView",
     components: {
