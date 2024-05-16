@@ -24,7 +24,7 @@ interface Messages {
 export default {
     install (app: any) {
         app.component("VeeForm", VeeForm);
-        app.component("VeeFfield", VeeField);
+        app.component("VeeField", VeeField);
         app.component("VeeErrorMessage", VeeErrorMessage)
 
         defineRule("required", required)
