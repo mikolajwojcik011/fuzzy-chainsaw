@@ -35,16 +35,18 @@ export default {
   },
   data() {
     return {
-      public_key: "",
-      private_key: "",
-      IdQuestionArr: [{ id: uuidv4(), label: "", format: "" }],
-      QuestionArr: [],
-      animateKeys: false,
-    } as TestSchema;
+      test: {
+        public_key: "",
+        private_key: "",
+        IdQuestionArr: [{ id: uuidv4(), label: "", format: "" }],
+        QuestionArr: [],
+        animateKeys: false,
+      } as TestSchema,
+    };
   },
   methods: {
     handleUpdateIndexStyle({ qInx, index_style }: any) {
-      this.QuestionArr[qInx].index_style = index_style;
+      this.test.QuestionArr[qInx].index_style = index_style;
     },
     addIdQuestion() {
       let newIdQ: IdQuestion = {
@@ -52,10 +54,10 @@ export default {
         label: "",
         format: "Text",
       };
-      this.IdQuestionArr.push(newIdQ);
+      this.test.IdQuestionArr.push(newIdQ);
     },
     removeIdQuestion(qIndex: number) {
-      this.IdQuestionArr.splice(qIndex, 1);
+      this.test.IdQuestionArr.splice(qIndex, 1);
     },
     addCustomQuestion() {
       let newQuestion: Question = {
@@ -64,10 +66,10 @@ export default {
         answerArr: [],
         index_style: 1,
       };
-      this.QuestionArr.push(newQuestion);
+      this.test.QuestionArr.push(newQuestion);
     },
     removeQuestion(qInx: number) {
-      this.QuestionArr.splice(qInx, 1);
+      this.test.QuestionArr.splice(qInx, 1);
     },
     addAnswer(qInx: any) {
       let answer: Answer = {
@@ -75,27 +77,27 @@ export default {
         content: "",
         is_true: false,
       };
-      if (this.QuestionArr[qInx].answerArr)
-        this.QuestionArr[qInx].answerArr.push(answer);
+      if (this.test.QuestionArr[qInx].answerArr)
+        this.test.QuestionArr[qInx].answerArr.push(answer);
     },
     markAnswer(qInx: number, aInx: number) {
-      this.QuestionArr[qInx].answerArr[aInx].is_true =
-        !this.QuestionArr[qInx].answerArr[aInx].is_true;
+      this.test.QuestionArr[qInx].answerArr[aInx].is_true =
+        !this.test.QuestionArr[qInx].answerArr[aInx].is_true;
     },
     removeAnswer(qInx: number, aInx: number) {
       console.log(aInx);
 
-      this.QuestionArr[qInx].answerArr.splice(aInx, 1);
+      this.test.QuestionArr[qInx].answerArr.splice(aInx, 1);
     },
     generateKeys() {
-      this.private_key = generate({
+      this.test.private_key = generate({
         exactly: 1,
         wordsPerString: 2,
         separator: "-",
         minLength: 4,
         maxLength: 8,
       })[0];
-      this.public_key = generate({
+      this.test.public_key = generate({
         exactly: 1,
         wordsPerString: 2,
         separator: "-",
@@ -104,12 +106,7 @@ export default {
       })[0];
     },
     submitFrom() {
-      let payload = {
-        public_key: this.public_key,
-        private_key: this.private_key,
-        QuestionArr: this.QuestionArr,
-        IdQuestionArr: this.IdQuestionArr,
-      } as TestSchema;
+      let payload: TestSchema = this.test;
 
       fetch("http://127.0.0.1:5000/create-test", {
         method: "POST",
@@ -161,7 +158,8 @@ export default {
                     >Klucz publiczny</label
                   >
                   <input
-                    v-model="public_key"
+                    required
+                    v-model="test.public_key"
                     id="public_key"
                     name="public_key"
                     type="text"
@@ -175,7 +173,8 @@ export default {
                     >Klucz prywatny</label
                   >
                   <input
-                    v-model="private_key"
+                    required
+                    v-model="test.private_key"
                     id="private-key"
                     name="private-key"
                     type="text"
@@ -197,7 +196,7 @@ export default {
               <div class="flex flex-wrap gap-6 justify-center">
                 <transition-group name="fade">
                   <InputIdentifyUser
-                    v-for="({ id }, qInx) in IdQuestionArr"
+                    v-for="({ id }, qInx) in test.IdQuestionArr"
                     :key="id"
                     :header="id"
                   >
@@ -213,7 +212,8 @@ export default {
                         >Label</label
                       >
                       <input
-                        v-model="IdQuestionArr[qInx].label"
+                        required
+                        v-model="test.IdQuestionArr[qInx].label"
                         :id="'label-' + id"
                         :name="'label-' + id"
                         type="text"
@@ -227,7 +227,8 @@ export default {
                         >Fromat</label
                       >
                       <select
-                        v-model="IdQuestionArr[qInx].format"
+                        required
+                        v-model="test.IdQuestionArr[qInx].format"
                         :id="'format-' + id"
                         :name="'format-' + id"
                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -247,7 +248,7 @@ export default {
             </template>
           </AppQuestionTemplate>
           <AppQuestionTemplate
-            v-for="({ id, answerArr }, qInx) in QuestionArr"
+            v-for="({ id, answerArr }, qInx) in test.QuestionArr"
             :key="id"
             :header="id"
           >
@@ -269,7 +270,7 @@ export default {
                     >Treść pytania</label
                   >
                   <textarea
-                    v-model="QuestionArr[qInx].head"
+                    v-model="test.QuestionArr[qInx].head"
                     id="head"
                     name="head"
                     type="text"
