@@ -212,7 +212,6 @@ export default {
                         >Label</label
                       >
                       <input
-                        required
                         v-model="test.IdQuestionArr[qInx].label"
                         :id="'label-' + id"
                         :name="'label-' + id"
@@ -227,7 +226,6 @@ export default {
                         >Fromat</label
                       >
                       <select
-                        required
                         v-model="test.IdQuestionArr[qInx].format"
                         :id="'format-' + id"
                         :name="'format-' + id"
@@ -329,7 +327,6 @@ export default {
             class="flex gap-6 bg-gray-100 ring-1 ring-inset ring-gray-300 rounded-xl p-6"
           >
             <button
-              @click.prevent="submitFrom"
               class="flex self-center rounded-md bg-indigo-600 px-10 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Zapisz test
