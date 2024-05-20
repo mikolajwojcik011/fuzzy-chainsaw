@@ -1,6 +1,19 @@
 <script lang="ts">
+import { useRouter } from "vue-router";
+import { ref } from "vue";
+
 export default {
   name: "MainView",
+  setup() {
+    const router = useRouter();
+    const public_key = ref("");
+
+    const submitForm = () => {
+      router.push({ name: "Test", params: { publicKey: public_key.value } });
+    };
+
+    return { submitForm, public_key };
+  },
 };
 </script>
 <template>
@@ -18,7 +31,7 @@ export default {
           </h2>
         </div>
         <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form class="space-y-6" action="#" method="POST">
+          <form @submit.prevent="submitForm" class="space-y-6" method="POST">
             <div>
               <label
                 for="public-key"
@@ -27,6 +40,7 @@ export default {
               >
               <div class="mt-2">
                 <input
+                  v-model="public_key"
                   id="public-key"
                   name="public-key"
                   type="text"
@@ -58,7 +72,7 @@ export default {
           </h2>
         </div>
         <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form class="space-y-6" action="#" method="POST">
+          <form class="space-y-6" method="POST">
             <div>
               <label
                 for="public-key"
@@ -96,12 +110,14 @@ export default {
             </div>
 
             <div>
-              <button
-                type="submit"
-                class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Wyniki
-              </button>
+              <router-link to="/Test">
+                <button
+                  type="submit"
+                  class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  Wyniki
+                </button>
+              </router-link>
             </div>
           </form>
         </div>
@@ -122,7 +138,6 @@ export default {
             <div>
               <router-link to="/Create-Test">
                 <button
-                  @submit.prevent=""
                   type="submit"
                   class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
