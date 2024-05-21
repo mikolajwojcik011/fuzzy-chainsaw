@@ -41,11 +41,29 @@ onMounted(async () => {
     <div class="w-4/5">
       <VeeForm>
         <div v-if="!store.identify">
-          <div v-for="question in store.question_id_arr">
+          <div v-for="question in store.question_id_arr" :key="question.id">
             <label :for="question.id">{{ question.label }}</label>
             <VeeField :name="question.id" type="text" />
           </div>
           <button @click="store.identify = true">Dalej</button>
+        </div>
+        <div v-if="store.identify">
+          <div v-for="question in store.question_arr" :key="question.id">
+            <h2>{{ question.head }}</h2>
+            <ol class="list-decimal p-8">
+              <li v-for="{ id, content } in question.answers" :key="id">
+                <div>
+                  <VeeField
+                    :key="id"
+                    :name="question.id"
+                    type="radio"
+                    :value="id"
+                  />
+                  <label :for="id">{{ content }}</label>
+                </div>
+              </li>
+            </ol>
+          </div>
         </div>
       </VeeForm>
     </div>
