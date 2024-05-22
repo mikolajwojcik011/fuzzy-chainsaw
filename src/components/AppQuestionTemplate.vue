@@ -23,6 +23,6 @@ export default {
         </div>
         <div class="w-full flex flex-col bg-white mt-2 py-20 sm:px-8 lg:px-10 rounded-b-xl ring-1 ring-inset ring-gray-300">
             <slot name="slotBody"></slot>
-        </div>   
+        </div>
     </div>
 </template>
