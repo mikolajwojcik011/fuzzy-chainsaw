@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 import { onMounted, reactive } from "vue";
-import { Question } from "../interface/question.ts";
 import { IdQuestion } from "../interface/id_question.ts";
+import AppQuestionTemplate from "../components/AppQuestionTemplate.vue";
+import AppCustomQuestionBody from "../components/AppCustomQuestionBody.vue";
 
 const route = useRoute();
 const publicKey = route.params.publicKey;
@@ -21,10 +22,23 @@ async function getTest() {
   return true;
 }
 
+const nextQuestion = () => {
+  if (store.currentQuestion < store.question_arr.length - 1) {
+    store.currentQuestion++;
+  }
+};
+
+const prevQuestion = () => {
+  if (store.currentQuestion > 0) {
+    store.currentQuestion--;
+  }
+};
+
 const store = reactive({
-  question_arr: [] as Question[],
+  question_arr: [] as any[],
   question_id_arr: [] as IdQuestion[],
   identify: false as boolean,
+  currentQuestion: 0 as number,
 });
 
 onMounted(async () => {
@@ -37,37 +51,70 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="h-screen w-full flex">
-    <div class="w-4/5">
+  <div class="h-screen w-full flex overflow-hidden">
+    <div class="w-full h-screen overflow-y-scroll">
       <VeeForm>
         <div v-if="!store.identify">
           <div v-for="question in store.question_id_arr" :key="question.id">
             <label :for="question.id">{{ question.label }}</label>
             <VeeField :name="question.id" type="text" />
           </div>
-          <button @click="store.identify = true">Dalej</button>
+          <button v-if="!store.identify" @click="store.identify = true">
+            Start
+          </button>
         </div>
-        <div v-if="store.identify">
-          <div v-for="question in store.question_arr" :key="question.id">
-            <h2>{{ question.head }}</h2>
-            <ol class="list-decimal p-8">
-              <li v-for="{ id, content } in question.answers" :key="id">
-                <div>
-                  <VeeField
-                    :key="id"
-                    :name="question.id"
-                    type="radio"
-                    :value="id"
-                  />
-                  <label :for="id">{{ content }}</label>
-                </div>
-              </li>
-            </ol>
+        <div class="p-10 flex flex-col" v-if="store.identify">
+          <div
+            class="w-9/12 self-center"
+            v-for="(question, inx) in store.question_arr"
+            :key="question.id"
+          >
+            <AppQuestionTemplate
+              :header="question.id"
+              v-if="inx === store.currentQuestion"
+            >
+              <template #slotBody>
+                <AppCustomQuestionBody>
+                  <template #slotHeader>
+                    <h2>{{ question.head }}</h2>
+                  </template>
+                  <template #slotBody>
+                    <ol class="list-decimal p-8">
+                      <li v-for="{ id, content } in question.answers" :key="id">
+                        <div>
+                          <VeeField
+                            :key="id"
+                            :name="question.id"
+                            type="radio"
+                            :value="id"
+                          />
+                          <label :for="id">{{ content }}</label>
+                        </div>
+                      </li>
+                    </ol>
+                  </template>
+                </AppCustomQuestionBody>
+              </template>
+            </AppQuestionTemplate>
+          </div>
+          <div class="flex justify-center gap-10">
+            <button
+              class="self-center mt-10 w-1/5 flex justify-center rounded-md bg-gray-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              @click.prevent="prevQuestion"
+            >
+              Poprzednie pytanie
+            </button>
+            <button
+              class="self-center mt-10 w-1/5 flex justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              @click.prevent="nextQuestion"
+            >
+              Następne pytanie
+            </button>
           </div>
         </div>
       </VeeForm>
     </div>
-    <div class="w-1/5 shadow relative px-4">
+    <div class="shadow relative px-4 2xl:w-1/3 xl:w-2/5 lg:w-2/5">
       <header class="bg-white">
         <div class="text-center mx-auto px-4 py-6 sm:px-6 lg:px-8">
           <h1 class="text-3xl font-bold tracking-tight text-gray-900">
@@ -78,7 +125,7 @@ onMounted(async () => {
       <div class="flex justify-center">
         <div class="flex gap-4 flex-wrap">
           <span
-            class="w-12 h-12 p-2 bg-gray-100 flex justify-center items-center text-gray-900 rounded-xl ring-1 ring-inset ring-gray-300 cursor-pointer"
+            class="w-10 h-10 p-2 bg-gray-100 flex justify-center items-center text-gray-900 rounded-xl ring-1 ring-inset ring-gray-300 cursor-pointer"
             v-for="(question, inx) in store.question_arr"
             :key="question.id"
             >{{ inx + 1 }}</span
