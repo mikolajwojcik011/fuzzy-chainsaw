@@ -108,7 +108,7 @@ export default {
     submitFrom() {
       let payload: TestSchema = this.test;
 
-      fetch("http://127.0.0.1:5000/create-test", {
+      fetch("http://192.168.1.32:5000/create-test", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -122,7 +122,7 @@ export default {
           return res.json();
         })
         .then((data) => {
-          console.log("Test created with ID:", data._id);
+          console.log("Test submited with ID:", data._id);
         })
         .catch((err) => {
           console.error("There was a problem with the fetch operation:", err);

@@ -1,16 +1,27 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 import { onMounted, reactive } from "vue";
-import { IdQuestion } from "../interface/id_question.ts";
 import AppQuestionTemplate from "../components/AppQuestionTemplate.vue";
 import AppCustomQuestionBody from "../components/AppCustomQuestionBody.vue";
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from "@heroicons/vue/24/solid";
+import { IdQuestion } from "../interface/id_question.ts";
 
 const route = useRoute();
 const publicKey = route.params.publicKey;
 
+const store = reactive({
+  question_arr: [] as any[],
+  question_id_arr: [] as IdQuestion[],
+  identify: false as boolean,
+  currentQuestion: 0 as number,
+  handout: [] as any[],
+  id_handout: [] as any[],
+});
+
 async function getTest() {
-  const response = await fetch("http://127.0.0.1:5000/get-test/" + publicKey);
+  const response = await fetch(
+    "http://192.168.1.32:5000/get-test/" + publicKey,
+  );
 
   if (!response.ok) {
     throw new Error(`Failed to fetch test. Error: ${response.status}`);
@@ -39,18 +50,50 @@ const createHandout = () => {
   store.handout = store.question_arr.map((question) => {
     return {
       id: question.id,
-      answer: question.answers.find((answer) => answer.id === question.id),
+      type: 1,
+      answer: null,
     };
   });
 };
 
-const store = reactive({
-  question_arr: [] as any[],
-  question_id_arr: [] as IdQuestion[],
-  identify: false as boolean,
-  currentQuestion: 0 as number,
-  handout: [] as any[],
-});
+const createIdHandout = () => {
+  store.id_handout = store.question_id_arr.map((question) => {
+    return {
+      type: 0,
+      id: question.id,
+      answer: null,
+    };
+  });
+};
+
+const submitForm = async () => {
+  let payload = {
+    public_key: publicKey,
+    answer_arr: store.id_handout.concat(store.handout),
+  };
+
+  console.log(payload);
+
+  await fetch("http://192.168.1.32:5000/submit-test", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`Failed to submit test. Error: ${res.status}`);
+      }
+      return res.json();
+    })
+    .then((data) => {
+      console.log("Test submited:", data);
+    })
+    .catch((error) => {
+      console.error("There was a problem with the fetch operation:", error);
+    });
+};
 
 const createClassObjForSpan = (inx: number) => {
   if (store.currentQuestion === inx) {
@@ -78,6 +121,7 @@ onMounted(async () => {
   try {
     await getTest();
     createHandout();
+    createIdHandout();
   } catch (err) {
     console.error(err);
   }
@@ -87,13 +131,32 @@ onMounted(async () => {
 <template>
   <div class="h-screen w-full flex overflow-hidden">
     <div class="w-full h-screen overflow-y-scroll relative">
-      <VeeForm>
-        <div v-if="!store.identify">
-          <div v-for="question in store.question_id_arr" :key="question.id">
-            <label :for="question.id">{{ question.label }}</label>
-            <VeeField :name="question.id" type="text" />
-          </div>
-          <button v-if="!store.identify" @click="store.identify = true">
+      <VeeForm @submit="submitForm">
+        <div class="flex flex-col w-full items-center" v-if="!store.identify">
+          <AppQuestionTemplate
+            class="w-1/2"
+            :header="question.id"
+            v-for="(question, inx) in store.question_id_arr"
+            :key="question.id"
+          >
+            <template #slotBody>
+              <label
+                class="text-sm font-medium leading-6 text-gray-900"
+                :for="question.id"
+                >{{ question.label }}</label
+              >
+              <VeeField
+                class="block rounded-md border-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                :name="question.id"
+                type="text"
+              />
+            </template>
+          </AppQuestionTemplate>
+          <button
+            class="self-center mt-12 lg:w-1/3 xl:w-1/5 flex justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            v-if="!store.identify"
+            @click="store.identify = true"
+          >
             Start
           </button>
         </div>
@@ -162,7 +225,23 @@ onMounted(async () => {
               Poprzednie pytanie
             </button>
             <button
+              :disabled="
+                store.currentQuestion !== store.question_arr.length - 1
+              "
+              :class="{
+                'opacity-50 pointer-events-none bg-rose-400':
+                  store.currentQuestion !== store.question_arr.length - 1,
+              }"
+              class="self-center gap-8 xl:w-1/5 lg:w-1/3 flex justify-center rounded-md bg-rose-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-rose-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600"
+            >
+              Zakończ
+            </button>
+            <button
               @click.prevent="nextQuestion"
+              :class="{
+                'opacity-50 pointer-events-none bg-indigo-400':
+                  store.currentQuestion === store.question_arr.length - 1,
+              }"
               class="self-center gap-8 mt-10 md:mt-0 lg:w-1/3 xl:w-1/5 flex justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Następne pytanie
