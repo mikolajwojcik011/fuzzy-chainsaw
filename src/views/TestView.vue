@@ -35,7 +35,7 @@ interface Test {
 }
 
 const getTest = async () => {
-  await fetch("http://57.128.200.162:5000/get-test/" + publicKey)
+  await fetch("https://57.128.200.162:5000/get-test/" + publicKey)
     .then((response) => {
       if (!response.ok) {
         throw new Error(`Failed to fetch test. Error: ${response.status}`);
@@ -60,7 +60,7 @@ const submitForm = () => {
 
   console.log(payload);
 
-  fetch("http://57.128.200.162:5000/submit-test", {
+  fetch("https://57.128.200.162:5000/submit-test", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
