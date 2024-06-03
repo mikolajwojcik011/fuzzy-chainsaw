@@ -60,7 +60,7 @@ const submitForm = () => {
 
   console.log(payload);
 
-  fetch("http://57.128.200.162:5000:5000/submit-test", {
+  fetch("http://57.128.200.162:5000/submit-test", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
