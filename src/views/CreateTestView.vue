@@ -108,7 +108,7 @@ export default {
     submitFrom() {
       let payload: TestSchema = this.test;
 
-      fetch("http://192.168.1.32:5000/create-test", {
+      fetch("http://57.128.200.162:5000/create-test", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

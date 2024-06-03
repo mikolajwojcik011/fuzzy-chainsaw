@@ -5,68 +5,54 @@ import AppQuestionTemplate from "../components/AppQuestionTemplate.vue";
 import AppCustomQuestionBody from "../components/AppCustomQuestionBody.vue";
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from "@heroicons/vue/24/solid";
 import { IdQuestion } from "../interface/id_question.ts";
+import { Question } from "../interface/question.ts";
 
 const route = useRoute();
 const publicKey = route.params.publicKey;
 
 const store = reactive({
   question_arr: [] as any[],
-  question_id_arr: [] as IdQuestion[],
+  question_id_arr: [] as any[],
   identify: false as boolean,
   currentQuestion: 0 as number,
   handout: [] as any[],
   id_handout: [] as any[],
 });
 
-async function getTest() {
-  const response = await fetch(
-    "http://192.168.1.32:5000/get-test/" + publicKey,
-  );
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch test. Error: ${response.status}`);
+onMounted(async () => {
+  try {
+    await getTest();
+    createHandout();
+    createIdHandout();
+  } catch (err) {
+    console.error(err);
   }
-  let data = await response.json();
-  console.log(data);
-  store.question_arr = await data["question-arr"];
-  store.question_id_arr = await data["question-id-arr"];
+});
 
-  return true;
+interface Test {
+  "question-arr": Question[];
+  "question-id-arr": IdQuestion[];
 }
 
-const nextQuestion = () => {
-  if (store.currentQuestion < store.question_arr.length - 1) {
-    store.currentQuestion++;
-  }
+const getTest = async () => {
+  await fetch("http://57.128.200.162:5000/get-test/" + publicKey)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to fetch test. Error: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data: Test) => {
+      console.log(data);
+      store.question_arr = data["question-arr"];
+      store.question_id_arr = data["question-id-arr"];
+    })
+    .catch((error) => {
+      console.error("There was a problem with the fetch operation:", error);
+    });
 };
 
-const prevQuestion = () => {
-  if (store.currentQuestion > 0) {
-    store.currentQuestion--;
-  }
-};
-
-const createHandout = () => {
-  store.handout = store.question_arr.map((question) => {
-    return {
-      id: question.id,
-      type: 1,
-      answer: null,
-    };
-  });
-};
-
-const createIdHandout = () => {
-  store.id_handout = store.question_id_arr.map((question) => {
-    return {
-      type: 0,
-      id: question.id,
-      answer: null,
-    };
-  });
-};
-
-const submitForm = async () => {
+const submitForm = () => {
   let payload = {
     public_key: publicKey,
     answer_arr: store.id_handout.concat(store.handout),
@@ -74,7 +60,7 @@ const submitForm = async () => {
 
   console.log(payload);
 
-  await fetch("http://192.168.1.32:5000/submit-test", {
+  fetch("http://57.128.200.162:5000:5000/submit-test", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -95,20 +81,56 @@ const submitForm = async () => {
     });
 };
 
-const createClassObjForSpan = (inx: number) => {
-  if (store.currentQuestion === inx) {
-    return {
-      "text-white": true,
-      "ring-indigo-600": true,
-      "bg-indigo-600": true,
-    };
+const nextQuestion = () => {
+  if (store.currentQuestion < store.question_arr.length - 1) {
+    store.currentQuestion++;
   }
+};
 
-  if (store.handout[inx].answer) {
+const prevQuestion = () => {
+  if (store.currentQuestion > 0) {
+    store.currentQuestion--;
+  }
+};
+
+const createHandout = () => {
+  store.handout = store.question_arr.map((question) => {
     return {
-      "ring-green-300": true,
-      "bg-green-100": true,
+      type: 1,
+      id: question.id,
+      answer: "",
     };
+  });
+};
+
+const createIdHandout = () => {
+  store.id_handout = store.question_id_arr.map((question) => {
+    return {
+      type: 0,
+      id: question.id,
+      answer: "",
+    };
+  });
+};
+
+const createClassObjForSpan = (inx: number) => {
+  console.log(`store.handout[${inx}]:`, store.handout[inx]); // Add this line
+
+  if (store.handout[inx]) {
+    if (store.currentQuestion === inx) {
+      return {
+        "text-white": true,
+        "ring-indigo-600": true,
+        "bg-indigo-600": true,
+      };
+    }
+
+    if (store.handout[inx].answer !== "") {
+      return {
+        "ring-green-300": true,
+        "bg-green-100": true,
+      };
+    }
   }
 
   return {
@@ -116,28 +138,19 @@ const createClassObjForSpan = (inx: number) => {
     "bg-gray-100": true,
   };
 };
-
-onMounted(async () => {
-  try {
-    await getTest();
-    createHandout();
-    createIdHandout();
-  } catch (err) {
-    console.error(err);
-  }
-});
 </script>
 
 <template>
   <div class="h-screen w-full flex overflow-hidden">
     <div class="w-full h-screen overflow-y-scroll relative">
-      <VeeForm @submit="submitForm">
-        <div class="flex flex-col w-full items-center" v-if="!store.identify">
+      <form @submit.prevent="submitForm">
+        <div class="flex flex-col w-full items-center" v-show="!store.identify">
           <AppQuestionTemplate
             class="w-1/2"
             :header="question.id"
             v-for="(question, inx) in store.question_id_arr"
             :key="question.id"
+            v-model="store.id_handout[inx].answer"
           >
             <template #slotBody>
               <label
@@ -145,10 +158,12 @@ onMounted(async () => {
                 :for="question.id"
                 >{{ question.label }}</label
               >
-              <VeeField
+              <input
+                :id="question.id"
                 class="block rounded-md border-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                :name="question.id"
                 type="text"
+                v-model="store.id_handout[inx].answer"
+                :name="question.id"
               />
             </template>
           </AppQuestionTemplate>
@@ -160,7 +175,7 @@ onMounted(async () => {
             Start
           </button>
         </div>
-        <div class="p-10 flex flex-col" v-if="store.identify">
+        <div class="p-10 flex flex-col" v-show="store.identify">
           <div
             class="w-9/12 h-full self-center"
             v-for="(question, inx) in store.question_arr"
@@ -195,13 +210,13 @@ onMounted(async () => {
                             :for="id"
                             >{{ content }}</label
                           >
-                          <VeeField
+
+                          <input
                             :key="id"
                             :id="id"
                             :name="question.id"
                             type="radio"
                             :value="id"
-                            :label="content"
                             class="hidden"
                             v-model="store.handout[inx].answer"
                           />
@@ -251,7 +266,7 @@ onMounted(async () => {
             </button>
           </div>
         </div>
-      </VeeForm>
+      </form>
     </div>
     <div
       class="shadow xl:block relative px-4 2xl:w-1/3 xl:w-2/5 lg:w-2/5 py-10 md:hidden"
