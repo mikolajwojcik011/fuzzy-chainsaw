@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import { onMounted, reactive } from "vue";
+import { computed, onMounted, reactive, ref } from "vue";
 import AppQuestionTemplate from "../components/AppQuestionTemplate.vue";
 import AppCustomQuestionBody from "../components/AppCustomQuestionBody.vue";
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from "@heroicons/vue/24/solid";
@@ -33,6 +33,28 @@ interface Test {
   "question-arr": Question[];
   "question-id-arr": IdQuestion[];
 }
+
+let countdownTime = ref(30 * 60); // 30 minutes in seconds
+
+const startTest = () => {
+  store.identify = true;
+
+  let countdownInterval = setInterval(() => {
+    if (countdownTime.value > 0) {
+      countdownTime.value--;
+    } else {
+      clearInterval(countdownInterval);
+    }
+  }, 1000);
+};
+
+const formattedTime = computed(() => {
+  let hours = Math.floor(countdownTime.value / 3600);
+  let minutes = Math.floor((countdownTime.value % 3600) / 60);
+  let seconds = countdownTime.value % 60;
+
+  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+});
 
 const getTest = async () => {
   await fetch("http://57.128.200.162:5000/get-test/" + publicKey)
@@ -114,8 +136,6 @@ const createIdHandout = () => {
 };
 
 const createClassObjForSpan = (inx: number) => {
-  console.log(`store.handout[${inx}]:`, store.handout[inx]); // Add this line
-
   if (store.handout[inx]) {
     if (store.currentQuestion === inx) {
       return {
@@ -170,7 +190,7 @@ const createClassObjForSpan = (inx: number) => {
           <button
             class="self-center mt-12 lg:w-1/3 xl:w-1/5 flex justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             v-if="!store.identify"
-            @click="store.identify = true"
+            @click="startTest"
           >
             Start
           </button>
@@ -302,7 +322,7 @@ const createClassObjForSpan = (inx: number) => {
           <h2 class="text-3xl tracking-tight text-gray-900">Pozostało:</h2>
           <p class="text-3xl font-bold tracking-tight text-gray-900"></p>
           <p class="text-7xl font-bold tracking-tight text-gray-900">
-            00:29:59
+            {{ formattedTime }}
           </p>
         </div>
       </div>
