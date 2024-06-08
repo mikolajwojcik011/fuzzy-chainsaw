@@ -191,6 +191,44 @@ export default {
               </button>
             </template>
           </AppQuestionTemplate>
+          <transition-group name="fade">
+            <AppQuestionTemplate key="1" :header="'Tytuł'">
+              <template #slotBody>
+                <div class="flex flex-col justify-center gap-6">
+                  <div class="w-1/3 self-center">
+                    <label
+                      for="title"
+                      class="block text-sm font-medium leading-6 text-gray-900"
+                      >Tytuł</label
+                    >
+                    <input
+                      required
+                      id="title"
+                      name="title"
+                      type="text"
+                      class="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    />
+                  </div>
+                  <div class="w-1/3 self-center">
+                    <label
+                      for="time"
+                      class="block text-sm font-medium leading-6 text-gray-900"
+                      >Ilość czasu</label
+                    >
+                    <input
+                      required
+                      id="time"
+                      name="title"
+                      value="00:00:00"
+                      type="time"
+                      step="1"
+                      class="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    />
+                  </div>
+                </div>
+              </template>
+            </AppQuestionTemplate>
+          </transition-group>
           <AppQuestionTemplate key="2" :header="'Pytanie identyfikujące'">
             <template #slotBody>
               <div class="flex flex-wrap gap-6 justify-center">
